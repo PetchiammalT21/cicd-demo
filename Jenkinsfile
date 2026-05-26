@@ -12,14 +12,17 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building the application...'
-                sh 'chmod +x gradlew && ./gradlew build -x test'
+                sh '''
+                    chmod +x gradlew
+                    ./gradlew build -x test --no-daemon
+                '''
             }
         }
 
         stage('Test') {
             steps {
                 echo 'Running tests...'
-                sh './gradlew test'
+                sh './gradlew test --no-daemon'
             }
         }
 
