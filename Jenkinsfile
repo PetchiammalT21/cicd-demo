@@ -12,30 +12,30 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building the application...'
-                bat './mvnw clean package -DskipTests'
+                sh 'chmod +x gradlew && ./gradlew build -x test'
             }
         }
 
         stage('Test') {
             steps {
                 echo 'Running tests...'
-                bat './mvnw test'
+                sh './gradlew test'
             }
         }
 
         stage('Docker Build') {
             steps {
                 echo 'Building Docker image...'
-                bat 'docker build -t cicd-demo:latest .'
+                sh 'docker build -t cicd-demo:latest .'
             }
         }
 
         stage('Deploy') {
             steps {
                 echo 'Deploying container...'
-                bat 'docker stop cicd-demo || exit 0'
-                bat 'docker rm cicd-demo || exit 0'
-                bat 'docker run -d --name cicd-demo -p 8081:8080 cicd-demo:latest'
+                sh 'docker stop cicd-demo || true'
+                sh 'docker rm cicd-demo || true'
+                sh 'docker run -d --name cicd-demo -p 8081:8080 cicd-demo:latest'
             }
         }
     }
